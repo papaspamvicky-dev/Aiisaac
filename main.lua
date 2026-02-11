@@ -1,7 +1,8 @@
 -- IsaacAI Main Entry Point
 local IsaacAI = RegisterMod("IsaacAI", 1)
-_G.IsaacAI = IsaacAI   -- EXPORT to global
+_G.IsaacAI = IsaacAI   -- EXPORT to global BEFORE requiring other modules
 
+-- Now require modules (they can access _G.IsaacAI safely)
 local Config = require("config")
 local Utils = require("src.utils")
 local StateExtractor = require("src.state_extractor")
@@ -52,7 +53,7 @@ function IsaacAI:WriteState()
     local success, err = pcall(function()
         local state = StateExtractor.ExtractFullState(frameCount)
         if not state then 
-            Utils.Log("Failed to extract state")
+            -- Don't log every failed extraction
             return 
         end
 
@@ -67,11 +68,14 @@ function IsaacAI:WriteState()
             file:Write(json)
             file:Close()
         else
-            Utils.Log("Failed to open state file for writing")
+            -- Only log occasionally to avoid spam
+            if frameCount % 300 == 0 then
+                Utils.Log("Failed to open state file for writing")
+            end
         end
     end)
     
-    if not success then
+    if not success and frameCount % 300 == 0 then
         Utils.Log("Error writing state: " .. tostring(err))
     end
 end
@@ -140,7 +144,7 @@ function IsaacAI:OnRender()
         end
     end)
     
-    if not success then
+    if not success and frameCount % 300 == 0 then
         Utils.Log("Error in render: " .. tostring(err))
     end
 end
