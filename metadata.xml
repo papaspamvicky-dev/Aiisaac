@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <name>IsaacAI</name>
+    <directory>isaac-ai</directory>
+    <description>AI-driven autonomous gameplay mod</description>
+    <version>1.0.0</version>
+    <visibility>public</visibility>
+    <tag id="Lua"/>
+</metadata>
